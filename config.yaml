@@ -1,0 +1,162 @@
+baseurl: https://Hardy-Lab-Statistical-Genetics.github.io/
+languageCode: en-us
+theme: "hugo-theme-stack"
+paginate: 5
+title: Statistical Genetics
+
+# Change it to your Disqus shortname before using
+disqusShortname: Maryam
+
+# Theme i18n support
+# Available values: en, fr, id, ja, ko, pt-br, zh-cn, zh-tw, es, de, nl, it, th, el, uk
+DefaultContentLanguage: en
+
+# Set hasCJKLanguage to true if DefaultContentLanguage is in [zh-cn ja ko]
+# This will make .Summary and .WordCount behave correctly for CJK languages.
+hasCJKLanguage: false
+
+permalinks:
+    post: /p/:slug/
+    page: /:slug/
+
+params:
+    mainSections:
+        - post
+    featuredImageField: image
+    rssFullContent: true
+    favicon:
+
+    footer:
+        since: 2022
+        customText:
+
+    dateFormat:
+        published: Jan 02, 2006
+        lastUpdated: Jan 02, 2006 15:04 MST
+
+    sidebar:
+        emoji:
+        subtitle: Hardy Lab at UCL Queen Square Institute of Neurology.
+        avatar:
+            enabled: true
+            local: true
+            src: img/HLSG.png
+
+    article:
+        math: false
+        toc: true
+        readingTime: true
+        license:
+            enabled: true
+            default: Licensed under CC BY-NC-SA 4.0
+
+    comments:
+        enabled: true
+        provider: utterances
+
+        utterances:
+            repo: Hardy-Lab-Statistical-Genetics.github/Hardy-Lab-Statistical-Genetics.github.io
+            issueTerm: pathname
+            label:
+
+    widgets:
+        enabled:
+            - search
+            - archives
+            - tag-cloud
+
+        archives:
+            limit: 5
+
+        tagCloud:
+            limit: 20
+
+    opengraph:
+        twitter:
+            # Your Twitter username
+            site:
+
+            # Available values: summary, summary_large_image
+            card: summary_large_image
+
+    defaultImage:
+        opengraph:
+            enabled: false
+            local: false
+            src:
+
+    colorScheme:
+        # Display toggle
+        toggle: true
+
+        # Available values: auto, light, dark
+        default: dark
+
+    imageProcessing:
+        cover:
+            enabled: true
+        content:
+            enabled: true
+
+### Custom menu
+### See https://docs.stack.jimmycai.com/configuration/custom-menu.html
+### To remove about, archive and search page menu item, remove `menu` field from their FrontMatter
+menu:
+    main:
+        - identifier: home
+          name: Home
+          url: /
+          weight: -100
+        - name: Papers
+          url: /papers/
+          pre: papers
+          weight: 4
+        - name: Packages
+          url: /packages/
+          pre: packages
+          weight: 5
+        - name: Slides
+          url: /slides/
+          pre: slides
+          weight: 6
+        - name: Github
+          url: https://github.com/Ehyaei
+          pre: github
+          weight: 7
+        - name: Categories
+          url: /categories/
+          pre: tag
+          weight: 8
+          params:
+              ### For demonstration purpose, the home link will be open in a new tab
+              newTab: true
+
+
+related:
+    includeNewer: true
+    threshold: 60
+    toLower: false
+    indices:
+        - name: tags
+          weight: 100
+
+        - name: categories
+          weight: 200
+
+markup:
+    goldmark:
+        renderer:
+            ## Set to true if you have HTML content inside Markdown
+            unsafe: false
+    tableOfContents:
+        endLevel: 4
+        ordered: true
+        startLevel: 2
+    highlight:
+        noClasses: false
+        codeFences: true
+        guessSyntax: true
+        lineNoStart: 1
+        lineNos: true
+        lineNumbersInTable: true
+        tabWidth: 4
