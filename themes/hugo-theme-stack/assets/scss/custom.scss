@@ -1,1 +1,83 @@
 /* Place your custom SCSS in HUGO_SITE_FOLDER/assets/scss/custom.scss */
+/* Place your custom SCSS in HUGO_SITE_FOLDER/assets/scss/custom.scss */
+
+/* Author: Ahmad Ehyaei */
+.menu li {
+    padding: 1px 0px!important;
+}
+
+.menu li {
+    font-size: large!important;
+}
+
+img[src*='#left'] {
+    float: left!important;
+    margin:0 10px 10px 0!important;
+}
+img[src*='#right'] {
+    float: right!important;
+    margin:0 10px 10px 0!important;
+}
+img[src*='#center'] {
+    display: block;
+    margin: auto;
+}
+
+
+.article-content pre {
+    margin-left: 0.5em!important;
+    margin-right: 0.5em!important;
+    border-radius: 1em;
+    width: unset;
+    background-color: #000000;
+}
+
+.r {
+    background-color: #fafafa!important;
+    Padding-left:-3em!important;
+    color:black!important;
+    border-radius: 1em;
+    border: 0.1em solid #215FBC;
+    border-right: 0.5em solid #215FBC;
+    width: calc(100% + var(--card-padding) * -1)!important;
+}
+
+.sbt {
+    background-color: #fafafa!important;
+    Padding-left:-3em!important;
+    color:black!important;
+    border-radius: 1em;
+    border: 0.1em solid #380D09;
+    border-right: 0.5em solid #380D09;
+    width: calc(100% + var(--card-padding) * -1)!important;
+}
+
+.bash {
+    background-color: #fafafa!important;
+    Padding-left:-3em!important;
+    color:black!important;
+    border-radius: 1em;
+    border: 0.1em solid #232C34;
+    border-right: 0.5em solid #232C34;
+    width: calc(100% + var(--card-padding) * -1)!important;
+}
+
+.scala {
+    background-color: #fafafa!important;
+    Padding-left:-3em!important;
+    color:black!important;
+    border-radius: 1em;
+    border: 0.1em solid #DE322F;
+    border-right: 0.5em solid #DE322F;
+    width: calc(100% + var(--card-padding) * -1)!important;
+}
+
+.python {
+    background-color: #fafafa!important;
+    Padding-left:-3em!important;
+    color:black!important;
+    border-radius: 1em;
+    border: 0.1em solid #FFD23F;
+    border-right: 0.5em solid #FFD23F;
+    width: calc(100% + var(--card-padding) * -1)!important;
+}

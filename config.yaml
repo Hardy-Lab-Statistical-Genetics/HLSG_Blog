@@ -119,6 +119,10 @@ menu:
           url: /slides/
           pre: slides
           weight: 6
+        - name: Members
+          url: /members/
+          pre: user
+          weight: 6
         - name: Github
           url: https://github.com/Ehyaei
           pre: github
