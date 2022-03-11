@@ -1,0 +1,108 @@
+---
+title: How to parrallelize R functions with HLSGUtils package?
+author: Ahmad Ehyaei
+date: '2022-03-11'
+slug: how-to-parrallelize-r-functions-with-hlsgutils-package
+categories:
+  - Big-Data
+tags:
+  - R
+  - HLSGUtils
+description: ~
+image: images/peakpx.jpg
+math: ~
+license: ~
+hidden: no
+comments: yes
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Suppose we want to run different linear models on a dataset. We can write it with a for loop in R, but as a result of many R functions working with one core, this process, It will eventually run on one core and is time-consuming. Another solution is to use multiprocess packages in R, like <code>parallel</code>. These packages are very good, but the time of the executions does not decrease linearly when we increase the computation cores. One solution is that we run our code in parallel in different R sessions manually, like the <code>Jobs</code> option in Rstudio. At first glance, this idea is hard to implement because we need to have different R scripts and run them simultaneously. The <code>HLSGUtils</code> package provides some functions to make this work simpler with dynamic system resource management of memory and thread options.</p>
+<p>We will try to describe parallelization in <code>HLGSUtils</code> step-by-step. First, we need a base script that we want to run concurrently. A simple example is shown below.</p>
+<pre class="r"><code>linear_fitter &lt;- function(formula, n){
+  df &lt;- data.frame(
+    y = rnorm(n, mean = 3),
+    x1 = rnorm(n),
+    x2 = rnorm(n),
+    x3 = rnorm(n)
+    )
+  
+  fit &lt;- lm(as.formula(formula), data = df)
+  
+  write_rds(broom::tidy(fit),sprintf(&quot;~/Desktop/fittel_lm_%s.rds&quot;,n))
+  print(sprintf(&quot;%s modeling was done with %s samples!&quot;, formula, n))
+}</code></pre>
+<p>Save the script in some path like <code>~/Desktop/modeling.R</code>
+<code>linear_fitter</code> is only run in the R environment. We need to convert this function that is run from the command line.
+<code>function_to_Rscript</code> converts function to command line format. This function needs:</p>
+<ul>
+<li><code>function_from_source</code>: The path of the saved R function</li>
+<li><code>function_name</code>: The name of the function in the source file</li>
+<li><code>packages</code>: The packages that are needed to be called</li>
+<li><code>arguments</code>: Names of function arguments</li>
+<li><code>arguments_class</code>: arguments function class types</li>
+<li><code>script_save_path</code>: The generated R script path</li>
+</ul>
+<pre class="r"><code>library(HLSGUtils)
+
+function_to_Rscript(
+  function_from_source = &quot;~/Desktop/modeling.R&quot;,
+  function_name = &quot;linear_fitter&quot;, 
+  packages = c(&quot;readr&quot;,&quot;broom&quot;),
+  arguments = c(&quot;formula&quot;,&quot;n&quot;),
+  arguments_class  = c(&quot;character&quot;,&quot;integer&quot;),
+  script_save_path = &quot;~/Desktop/modeling_r_script.R&quot;
+  )</code></pre>
+<p>The resulted script is ready to run on the command line.
+The converted code can be found below.</p>
+<pre class="r"><code>############################################################
+#                      linear_fitter                       #
+############################################################
+
+args &lt;- commandArgs(trailingOnly = TRUE)
+if (length(args) &lt; 2){stop(&#39;I think you forgot your parameters&#39;)}
+
+formula &lt;- args[1]
+n &lt;- as.integer(args[2])
+
+flush.console()
+
+# Load Libraries
+suppressMessages(library(readr))
+suppressMessages(library(broom))
+source(&quot;~/Desktop/modeling.R&quot;)
+
+# Add Function Its Arguments
+linear_fitter(
+formula = formula,
+n = n
+)</code></pre>
+<p><code>modeling_r_script.R</code> can be run in command line format by <code>Rscript --vanilla</code> command
+and set input arguments.</p>
+<pre class="bash"><code>Rscript --vanilla ~/Desktop/modeling_r_script.R y~x1 100</code></pre>
+<pre><code>## [1] &quot;y~x1 modeling was done with 100 samples!&quot;</code></pre>
+<p>After running the command, the result table is:</p>
+<pre class="r"><code>readr::read_rds(&quot;~/Desktop/fittel_lm_100.rds&quot;)</code></pre>
+<pre><code>## # A tibble: 2 × 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)   3.08      0.100     30.7   4.73e-52
+## 2 x1           -0.0125    0.0941    -0.133 8.95e- 1</code></pre>
+<p>Finally, we want to run multiple models in parallel. <code>parallel_rscripts</code> allows you to run R command line functions in parallel. It needs to set input arguments and system resource management thresholds.</p>
+<ul>
+<li><code>rscript_path</code>: The path of command line format script</li>
+<li><code>args</code>: list of function arguments</li>
+<li><code>used_memory_treshold</code>: The total percentage of system memory that is in use.</li>
+<li><code>used_cpu_treshold</code>: The total percentage of threads that is in use.</li>
+<li><code>sleep_time</code>: sleep time between two work in seconds</li>
+</ul>
+<pre class="r"><code>sample_size = c(100, 200, 300)
+formulas = c(&quot;y~x1&quot;, &quot;y~x1+x2&quot;, &quot;y~x1+x2+x3&quot;)
+parallel_rscripts(
+  rscript_path = &quot;~/Desktop/modeling_r_script.R&quot;,
+  args = list(formula = formulas, n = sample_size),
+  used_memory_treshold = 80,
+  used_cpu_treshold = 80,
+  sleep_time = 5 )</code></pre>
